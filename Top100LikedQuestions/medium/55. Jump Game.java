@@ -12,6 +12,7 @@
 //        Output: true
 //        Explanation: Jump 1 step from index 0 to 1, then 3 steps to the last index.
 
+//DP: O(N^2)
 class Solution {
     public boolean canJump(int[] nums) {
         if (nums == null || nums.length == 0) {
@@ -30,5 +31,27 @@ class Solution {
         }
 
         return dp[dp.length -1];
+    }
+}
+
+//Greedy: O(N)
+class Solution {
+    public boolean canJump(int[] nums) {
+        if (nums.length < 2) {
+            return true;
+        }
+
+        for (int i = nums.length -2; i >=0 ; i--) {
+            if (nums[i] == 0) {
+                int needSkip = 1;
+                while (needSkip > nums[i]) {
+                    needSkip ++;
+                    i --;
+                    if (i < 0) return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
