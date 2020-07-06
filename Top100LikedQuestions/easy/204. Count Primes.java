@@ -15,27 +15,26 @@ class Solution {
             return 0;
         }
 
-        boolean[] nonPrime = new boolean[n];
-        nonPrime[0] = true;
-        nonPrime[1] = true;
+        boolean[] isPrime = new boolean[n];
+        for (int i = 2; i < isPrime.length; i++) {
+            isPrime[i] = true;
+        }
 
         for (int i = 2; i < Math.sqrt(n); i ++) {
-            if (!nonPrime[i]) {
-                for (int j = 2; j * i < n; j ++) {
-                    nonPrime[i * j] = true;
+            if (isPrime[i]) {
+                for (int j =2; j * i < isPrime.length; j ++) {
+                    isPrime[i *j] = false;
                 }
             }
         }
 
         int result = 0;
-        for (int i = 2; i < n; i ++) {
-            if (!nonPrime[i]) {
+        for (int i = 2; i < n; i++) {
+            if (isPrime[i]) {
                 result ++;
             }
         }
 
         return result;
-
     }
-
 }
