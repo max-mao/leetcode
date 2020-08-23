@@ -36,6 +36,37 @@ class Solution {
     }
 }
 
+//deque 1:
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+        int left = 0;
+        Deque<Integer> maxQ = new LinkedList<>();
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < nums.length; i++) {
+            while (!maxQ.isEmpty() && maxQ.peekLast() < nums[i]) {
+                maxQ.pollLast();
+            }
+            maxQ.addLast(nums[i]);
+            while (i - left >= k) {
+                if (nums[left] == maxQ.peekFirst()) {
+                    maxQ.pollFirst();
+                }
+                left ++;
+            }
+            if (i - left + 1 == k) {
+                result.add(maxQ.peekFirst());
+            }
+        }
+
+        int[] list = new int[result.size()];
+        for (int i = 0; i < list.length; i++) {
+            list[i] = result.get(i);
+        }
+
+        return list;
+    }
+}
+
 //Deque，解释：https://www.youtube.com/watch?v=fbkvdWUS5Ic&t=1s
 class Solution {
     public int[] maxSlidingWindow(int[] nums, int k) {
