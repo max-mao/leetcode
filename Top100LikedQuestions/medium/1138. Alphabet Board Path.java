@@ -23,6 +23,7 @@
 //Input: target = "leet"
 //Output: "DDR!UURRR!!DDD!"
 
+//solution: https://leetcode.com/problems/alphabet-board-path/discuss/345312/Java-clean-and-short-solution-easy-to-understand
 class Solution {
     public String alphabetBoardPath(String target) {
         if (target == null || target.length() == 0) {
