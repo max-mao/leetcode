@@ -21,21 +21,17 @@ class Solution {
 }
 
 // Iterative:
-
-
-
 class Solution {
     public Node connect(Node root) {
-        if (root == null) {
-            return null;
-        }
-
         Node leftMost = root;
-        while (leftMost.left != null) {
+
+        while (leftMost != null) {
             Node cur = leftMost;
             while (cur != null) {
-                cur.left.next = cur.right;
-                if (cur.next != null) {
+                if (cur.left != null) {
+                    cur.left.next = cur.right;
+                }
+                if (cur.next != null && cur.right != null) {
                     cur.right.next = cur.next.left;
                 }
                 cur = cur.next;
@@ -46,3 +42,6 @@ class Solution {
         return root;
     }
 }
+
+
+

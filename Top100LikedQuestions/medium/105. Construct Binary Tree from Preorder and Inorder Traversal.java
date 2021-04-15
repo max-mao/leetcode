@@ -27,27 +27,22 @@
  */
 class Solution {
     public TreeNode buildTree(int[] preorder, int[] inorder) {
-        return helper(preorder, inorder, 0, 0, inorder.length -1);
-    }
-
-    private TreeNode helper(int[] preorder,
-                            int[] inorder,
-                            int index,
-                            int in_start,
-                            int in_end) {
-        if (index > preorder.length -1 || in_start > in_end) {
+        if (preorder == null || preorder.length == 0) {
             return null;
         }
+        return helper(preorder, 0, preorder.length-1, inorder, 0, inorder.length-1);
+    }
 
-        TreeNode root = new TreeNode(preorder[index]);
+    private TreeNode helper(int[] preorder, int preStart, int preEnd, int[] inorder, int inStart, int inEnd) {
+        if (preStart > preEnd || inStart > inEnd) {
+            return null;
+        }
+        TreeNode root = new TreeNode(preorder[preStart]);
 
-        for (int i = in_start; i <= in_end; i++) {
-            if (inorder[i] != preorder[index]) {
-                continue;
-            } else {
-                int left_len = i - in_start;
-                TreeNode left = helper(preorder, inorder, index+1, in_start, i-1);
-                TreeNode right = helper(preorder, inorder, index+left_len+1, i+1, in_end);
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == preorder[preStart]) {
+                TreeNode left = helper(preorder, preStart+1, preStart+i-inStart, inorder, inStart, i-1);
+                TreeNode right = helper(preorder, preStart+i-inStart+1, preEnd, inorder, i+1, inEnd);
                 root.left = left;
                 root.right = right;
                 break;
