@@ -19,25 +19,20 @@
 //solution: https://leetcode.com/problems/redundant-connection-ii/discuss/108045/C%2B%2BJava-Union-Find-with-explanation-O(n)
 class Solution {
     public int[] findRedundantDirectedConnection(int[][] edges) {
-        if (edges == null || edges.length == 0) {
-            return null;
-        }
-
-        int nodeHasTwoIncoming = -1;
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i< edges.length; i++) {
-            int node = edges[i][1];
-            map.put(node, map.getOrDefault(node, 0)+1);
-            if (map.get(node) == 2) {
-                nodeHasTwoIncoming = node;
+        int hasTwoIncoming = -1;
+        Map<Integer, Integer> incoming = new HashMap<>();
+        for (int[] edge : edges) {
+            incoming.put(edge[1], incoming.getOrDefault(edge[1], 0) + 1);
+            if (incoming.get(edge[1]) == 2) {
+                hasTwoIncoming = edge[1];
             }
         }
 
-        if (nodeHasTwoIncoming == -1) {
+        if (hasTwoIncoming == -1) {
             return unionFind(edges, -1);
         } else {
-            for (int i = edges.length -1; i >= 0; i --) {
-                if (edges[i][1] == nodeHasTwoIncoming) {
+            for (int i = edges.length -1; i >= 0; i--) {
+                if (edges[i][1] == hasTwoIncoming) {
                     int[] res = unionFind(edges, i);
                     if (res == null) {
                         return edges[i];
@@ -50,48 +45,42 @@ class Solution {
     }
 
     private int[] unionFind(int[][] edges, int skip) {
-        Map<Integer, Integer> parents = new HashMap<>();
-
+        Map<Integer, Integer> parent = new HashMap<>();
+        int[] res = null;
         for (int i = 0; i < edges.length; i++) {
             if (i == skip) {
                 continue;
             }
-            int x = edges[i][0];
-            int y = edges[i][1];
-            if (union(x, y, parents)){
-                int[] result = new int[2];
-                result[0] = x;
-                result[1] = y;
-                return result;
+            int[] edge = edges[i];
+            if (find(edge[0], parent) == find(edge[1], parent)) {
+                res = edge;
+            } else {
+                union(edge[0], edge[1], parent);
             }
         }
 
-        return null;
+        return res;
     }
 
-    private boolean union(int x, int y, Map<Integer, Integer> parents) {
-        if (!parents.containsKey(x)) {
-            parents.put(x,x);
+    private int find(int i, Map<Integer, Integer> parent) {
+        if (!parent.containsKey(i)) {
+            parent.put(i, i);
+            return i;
         }
-
-        if (!parents.containsKey(y)) {
-            parents.put(y,y);
+        int p = parent.get(i);
+        if (i == p) {
+            return p;
         }
-
-        int px = find(x, parents);
-        int py = find(y, parents);
-        if (px == py) return true;
-        parents.put(px, py);
-        return false;
+        return find(p, parent);
     }
 
-    private int find(int x, Map<Integer, Integer> parents) {
-        int p = parents.getOrDefault(x,x);
-        if (x != p) {
-            int pp = find(p, parents);
-            parents.put(x, pp);
+    private void union(int a, int b, Map<Integer, Integer> parent) {
+        int p_a = find(a, parent);
+        int p_b = find(b, parent);
+        if (p_a == p_b) {
+            return;
+        } else {
+            parent.put(p_a, p_b);
         }
-
-        return parents.getOrDefault(x,x);
     }
 }

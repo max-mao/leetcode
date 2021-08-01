@@ -18,74 +18,68 @@
 class Solution {
     public String alienOrder(String[] words) {
         if (words == null || words.length == 0) {
-            return null;
+            return "";
         }
-        int[] indegree = new int[26];
         Map<Character, Set<Character>> graph = new HashMap<>();
+        int[] indegree = new int[26];
         buildGraph(words, graph, indegree);
         return bfs(graph, indegree);
     }
 
-    private String bfs(Map<Character, Set<Character>> graph, int[] indegree) {
-        int totalNode = graph.size();
-        StringBuilder sb = new StringBuilder();
+    private void buildGraph(String[] words, Map<Character, Set<Character>> graph, int[] indegree) {
+        for (String word : words) {
+            for (char c : word.toCharArray()) {
+                graph.putIfAbsent(c, new HashSet<Character>());
+            }
+        }
 
+        for (int i = 1; i < words.length; i++) {
+            String prev = words[i-1];
+            String cur = words[i];
+            //check for cases like, ["wrtkj","wrt"]; it's invalid, because this input is not in sorted lexicographical order
+            if (prev.length() > cur.length() && prev.startsWith(cur)) {
+                graph.clear();
+                return;
+            }
+            int minLen = Math.min(prev.length(), cur.length());
+            for (int j = 0; j < minLen; j++) {
+                if (prev.charAt(j) != cur.charAt(j)) {
+                    char from = prev.charAt(j);
+                    char to = cur.charAt(j);
+                    if (!graph.get(from).contains(to)) {
+                        graph.get(from).add(to);
+                        indegree[to - 'a']++;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private String bfs(Map<Character, Set<Character>> graph, int[] indegree) {
         Queue<Character> queue = new LinkedList<>();
-        for (char c: graph.keySet()) {
+        int strLen = graph.keySet().size();
+
+        StringBuilder sb = new StringBuilder();
+        for (char c : graph.keySet()) {
             if (indegree[c - 'a'] == 0) {
+                sb.append(c);
                 queue.add(c);
             }
         }
 
         while (!queue.isEmpty()) {
-            char cur = queue.poll();
-            sb.append(cur);
-            Set<Character> neighbors = graph.get(cur);
-            for (char neighbor: neighbors) {
-                indegree[neighbor - 'a'] --;
-                if (indegree[neighbor - 'a'] == 0) {
-                    queue.add(neighbor);
+            Character cur = queue.poll();
+            Set<Character> nextNodes = graph.get(cur);
+            for (char next : nextNodes) {
+                indegree[next - 'a'] --;
+                if (indegree[next - 'a'] == 0) {
+                    queue.add(next);
+                    sb.append(next);
                 }
             }
         }
 
-        if (sb.length() == totalNode) {
-            return sb.toString();
-        } else {
-            return "";
-        }
-    }
-
-    private void buildGraph(String[] words, Map<Character, Set<Character>> graph, int[] indegree) {
-        for (int i = 0; i < words.length; i ++) {
-            for (char c : words[i].toCharArray()) {
-                if (!graph.containsKey(c)) {
-                    graph.put(c, new HashSet<Character>());
-                }
-            }
-        }
-
-        for (int i = 0; i < words.length -1; i ++) {
-            String first = words[i];
-            String second = words[i+1];
-            int len = Math.min(first.length(), second.length());
-            for (int j = 0; j < len; j ++) {
-                if (first.charAt(j) != second.charAt(j)) {
-
-                    char out = first.charAt(j);
-                    char in = second.charAt(j);
-                    if (!graph.get(out).contains(in)) {
-                        graph.get(out).add(in);
-                        indegree[in - 'a'] ++;
-                    }
-                    break;
-                }
-
-                if(j == len - 1 && first.length() > second.length()){
-                    graph.clear();
-                    return;
-                }
-            }
-        }
+        return sb.length() == strLen ? sb.toString() : "";
     }
 }

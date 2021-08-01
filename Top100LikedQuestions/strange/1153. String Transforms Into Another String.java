@@ -13,7 +13,7 @@
 //        Output: true
 //        Explanation: Convert 'c' to 'e' then 'b' to 'd' then 'a' to 'c'. Note that the order of conversions matter.
 
-//solution: https://leetcode.com/problems/string-transforms-into-another-string/discuss/355382/JavaC%2B%2BPython-Need-One-Unused-Character
+//solution: https://leetcode.com/problems/string-transforms-into-another-string/discuss/399352/Complete-Logical-Thinking-(This-is-why-only-check-if-str2-has-unused-character)
 class Solution {
     public boolean canConvert(String str1, String str2) {
         if (str1.length() != str2.length()) {

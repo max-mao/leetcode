@@ -35,37 +35,31 @@ class Node {
     }
 };
 */
-//solution: https://www.youtube.com/watch?v=vy2mnT3TEXQ&t=519s
+//solution: https://www.youtube.com/watch?v=yl-fdkyQD8A
+
 class Solution {
     public Node connect(Node root) {
-        Node parent = root;
-        Node child = null;
-        Node childHead = null;
+        if (root == null) {
+            return root;
+        }
 
-        while (parent != null) {
-            while (parent != null) {
-                if (parent.left != null) {
-                    if (childHead == null) {
-                        childHead = parent.left;
-                    } else {
-                        child.next = parent.left;
-                    }
-                    child = parent.left;
-                }
+        Node head = root;
+        while (head != null) {
+            Node dummy = new Node(0);
+            Node temp = dummy;
 
-                if (parent.right != null) {
-                    if (childHead == null) {
-                        childHead = parent.right;
-                    } else {
-                        child.next = parent.right;
-                    }
-                    child = parent.right;
+            while (head != null) {
+                if (head.left != null) {
+                    temp.next = head.left;
+                    temp = temp.next;
                 }
-                parent = parent.next;
+                if (head.right != null) {
+                    temp.next = head.right;
+                    temp = temp.next;
+                }
+                head = head.next;
             }
-            parent = childHead;
-            child = null;
-            childHead = null;
+            head = dummy.next;
         }
 
         return root;
